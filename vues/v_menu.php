@@ -25,7 +25,7 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="<?php  echo "/lafleur5/news/gestion"; ?>">News</a></li>
-            <li><a class="dropdown-item" href="index.php?page=gestionfleurs">Fleurs</a></li>
+            <li><a class="dropdown-item" href="<?php  echo "/lafleur5/fleurs/gestion"; ?>">Fleurs</a></li>
 
           </ul>
         </li>
