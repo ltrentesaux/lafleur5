@@ -1,93 +1,202 @@
-<?php require_once('modeles/m_fleur.php'); 
-// Si besoin 
-// Appel de la fonction correspondante (Fonctions variables) 
+<?php 
+
+require_once('modeles/m_fleur.php');
+
+require_once('modeles/m_categorie.php');
+
+ 
 $_SESSION['action']();
-//########################################################################################//
-// Cattalogue des fleurs
-//########################################################################################//
-function index() { 
-	$lesFleurs=getToutesFleurs(); 
-	include ('vues/'.$_SESSION['controleur'].'/'.$_SESSION['action'].'.php');
-}
-//########################################################################################// 
-// Gestion des fleurs : Liste 
-//########################################################################################// 
-function gestion() 
-{ 
-	$lesFleurs=getToutesFleurs(); 
-	include ('vues/'.$_SESSION['controleur'].'/'.$_SESSION['action'].'.php'); 
-} 
-//########################################################################################// 
-// Gestion des fleurs  : Mise à jour 
-//########################################################################################// 
-function update() {
-if ($_SERVER['REQUEST_METHOD'] != 'POST')
+
+ 
+//#################################################################################################################################//
+
+// Catalogue des Fleurs
+
+//#################################################################################################################################//
+
+function index()
+
 {
-   
-include ('vues/'.$_SESSION['controleur'].'/'.$_SESSION['action'].'.php'); 
+
+    $lescategs=getLesCategories();
+
+    if (isset($_SESSION['idurl']))
+
+       $lesFleurs=getLesFleursCat($_SESSION['idurl']); 
+
+    else
+
+       $lesFleurs=getLesFleurs(); 
+
+    include ('vues/'.$_SESSION['controleur'].'/'.$_SESSION['action'].'.php');
+
 }
 
- else {
-    if(modifFleur($_POST['titre'],$_POST['contenu'],$_POST['date'], $_POST['image'])==true)
-        {
-            AffecterInfoSucces("La fleur à été modifiée !");
-        }
-        else
-        {
-            AffecterInfoEchec("La fleur n'a pas pu être modifiée");
-        }
-         header('location:'.WEBROOT.'fleurs/gestion');
+ 
 
- }
 
-} 
-//########################################################################################// 
-// Gestion des fleurs  : Insertion 
-//########################################################################################//
-function insert() { 
+ 
+//#################################################################################################################################//
 
-if ($_SERVER['REQUEST_METHOD'] != 'POST')
+// Gestion des Fleurs : Liste
+
+//#################################################################################################################################//
+
+function gestion()
+
 {
-   
-include ('vues/'.$_SESSION['controleur'].'/'.$_SESSION['action'].'.php'); 
+
+    $lesfleurs = getLesFleurs(); 
+
+    include ('vues/'.$_SESSION['controleur'].'/'.$_SESSION['action'].'.php');
+
 }
 
- else {
+ 
+//#################################################################################################################################//
 
-    if(SetAjoutFleur($_POST['titre'],$_POST['contenu'],$_POST['date'], $_POST['image'])==true)
-        {
-            AffecterInfoSucces("La fleur à été ajoutée !");
-        }
-        else
-        {
-            AffecterInfoEchec("La fleur n'a pas pu être ajoutée");
-        }
-         header('location:'.WEBROOT.'fleurs/gestion');
- }
+// Gestion des Fleurs : Mise à jour
 
- }
+//#################################################################################################################################//
 
-//########################################################################################// 
-// Gestion des fleurs  : Suppression
-//########################################################################################// 
-function delete() {
-if ($_SERVER['REQUEST_METHOD'] != 'POST')
+function update()
+
 {
-   
-include ('vues/'.$_SESSION['controleur'].'/'.$_SESSION['action'].'.php'); 
+
+    if ($_SERVER['REQUEST_METHOD'] != 'POST')
+
+    {
+
+        $lesCat = getLesCategories();
+
+        // Affichage de la news dans un formulaire 
+
+        $UneFleur= getUneFleur($_SESSION['idUrl']);
+
+        include ('vues/'.$_SESSION['controleur'].'/'.$_SESSION['action'].'.php');
+
+    }
+
+    else
+
+    {
+
+        // Mise à jour du contenu de la page dans la base de données 
+
+        $resultats = setModifFleur($_POST['Desig'] , $_POST['Prix'], $_POST['Photo'], $_POST['cat'], $_POST['Ref'] );
+
+ 
+        // Test du résultat de requête et préparation du message à afficher
+
+        if ($resultats == true)
+
+            AffecterInfoSucces("La fleur '".$_POST['Ref']."' a été modifiée avec succès");
+
+        else
+
+            AffecterInfoEchec("La fleur '".$_POST['Ref']."' n'a pas été modifiée suite à une erreur");
+
+    
+
+            header('location:'.WEBROOT.'fleur/gestion');  
+
+    }
+
 }
 
- else {
-  if(deletFleur($_POST['titre'],$_POST['contenu'],$_POST['date'], $_POST['image'])==true)
-        {
-            AffecterInfoSucces("La fleur à été ajoutée !");
-        }
+ 
+//#################################################################################################################################//
+
+// Gestion des Fleurs : Insertion
+
+//#################################################################################################################################//
+
+function insert()
+
+{
+
+    if ($_SERVER['REQUEST_METHOD'] != 'POST')
+
+    {
+
+      $lesCat=getLesCategories();
+
+      include ('vues/'.$_SESSION['controleur'].'/'.$_SESSION['action'].'.php');
+
+    }
+
+    else
+
+    {
+
+            // Ajout du contenu de la fleur dans la base de données 
+
+            $resultats = setAjoutFleur( $_POST['Ref'] , $_POST['Desig'], $_POST['Prix'], $_POST['Photo'], $_POST['cat'] );
+
+ 
+            // Test du résultat de requête et préparation du message à afficher
+
+            if ($resultats == true)
+
+                AffecterInfoSucces("La fleur '".$_POST['Ref']."' a été ajoutée avec succès");
+
+            else
+
+                AffecterInfoEchec("La fleur '".$_POST['Ref']."' n'a pas été ajoutée suite à une erreur");
+
+           header('location:'.WEBROOT.'fleur/gestion');  
+
+    }
+
+}
+
+
+
+
+
+ 
+//#################################################################################################################################//
+
+// Gestion des Fleurs : Suppression
+
+//#################################################################################################################################//
+
+function delete()
+
+{
+
+    if ($_SERVER['REQUEST_METHOD'] != 'POST')
+
+    {
+
+      // Affichage de la fleur 
+
+        $UneFleur= getUneFleur($_SESSION['idUrl']);
+
+        include ('vues/'.$_SESSION['controleur'].'/'.$_SESSION['action'].'.php');
+
+    }
+
+    else
+
+    {
+
+        $resultats = setSupprimerFleur($_POST['Ref'] );
+
+         
+
+        // Test du résultat de requête et préparation du message à afficher
+
+        if ($resultats == true)
+
+                AffecterInfoSucces("La fleur a été supprimée avec succès");
+
         else
-        {
-            AffecterInfoEchec("La fleur n'a pas pu être ajoutée");
-        }
-         header('location:'.WEBROOT.'fleurs/gestion');
 
- }
+             AffecterInfoEchec("La fleur n'a pas été supprimée suite à une erreur");
 
- }
+        header('location:'.WEBROOT.'fleur/gestion');  
+
+    }
+
+}

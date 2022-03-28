@@ -1,36 +1,61 @@
-<?php require_once('modeles/m_fleur.php');
-$lesfleurs=getToutesFleurs();
-?>
-<div align="center">
-    <img src="<?php echo WEBROOT.'public/images/Divers/news-64.png' ?>">
-</div>
-<h3 align="center"> Gestion des News </h3>
+<div align="center"><h1> Gestion des fleurs </h1></div>
+
+<br/>
+
 <?php AfficherAlertes(); ?>
-<table align="center" width="90%" cellpaddin="4" border="1">
-    
-    <thead>
-        <tr style="background-color: lightblue">
-            <th> <b> Titre </th>
-            <th> <b> Date </th>
-            <th> <b> Modifier </th>
-            <th> <b> Supprimer </th>
-        </tr>
-    </thead>
-    <body>
-        <?php
-            while($unenews = $lesnews->fetch())
-            {
-                echo"<tr>
-                <td>".$unefleur->refFl."</td>
-                <td>".$unefleur->designFl."</td>
-                <td><a href='".WEBROOT."fleur/modifFleur/".$unefleur->refFl."'><img src='".WEBROOT."public/images/gestion/Modifier.png'></td>
-                <td><a href='".WEBROOT."fleur/supprFleur/".$unefleur->refFl."'><img src='".WEBROOT."public/images/gestion/poubelle.png'></td>
-                </tr>";
-            }
-        ?>
+
+ 
+<!-- Tableau des fleurs -->
+
+<table class="table table table-bordered table-hover">
+
+<tr class='table-primary'>           
+
+            <th> <b> Photo </th>
+
+                    <th> <b> Référence </th>
+
+                    <th> <b> Désignation </th>
+
+                    <th> <b> Prix </th>
+
+                    <th> Modifier </th> 
+
+                    <th> Supprimer </th> 
+
+ </tr>
+
+    <?php
+
+    while( $UneFleur = $lesfleurs->fetch() ) 
+
+    { 
+
+         echo "<tr> <td align='center'> <img src='".WEBROOT."public/images/fleurs/".$UneFleur->PhotoFl."' width='40'> </td>";
+
+         echo "<td>".$UneFleur->RefFl."</td>";
+
+         echo "<td>".$UneFleur->DesignFl."</td>";
+
+         echo "<td align='right'> ".$UneFleur->PrixFl." €</td>";
+
+         echo "<td align='center'> <a href='".WEBROOT."news/update/".$UneFleur->RefFl."'>
+
+                     <img src='".WEBROOT."public/images/divers/Modifier.png'></a></td>";
+
+         echo "<td align='center'> <a href='".WEBROOT."news/delete/".$UneFleur->RefFl."'>
+
+                     <img src='".WEBROOT."public/images/divers/poubelle.png'></a></td> </tr>";
+
+              
+
+    } 
+
+    ?>
+
 </table>
-<br>
-<div align="center">
-    <button type="button" class="btn btn-success"><a  style="color:yellow" href="<?php echo WEBROOT.'fleur/ajouterFleur'; ?>"><img src="<?php echo WEBROOT.'public/images/gestion/Ajouter.png'; ?>">Ajouter une news </a></button>
-</div>
-    
+
+ 
+<p align='center'><a class='btn btn-success' href='<?php echo WEBROOT."fleur/insert";?>'><img border=0 src='<?php echo WEBROOT."public/images/divers/Ajouter.png";?>'>&nbsp;Ajouter une fleur</a></p>
+
+
